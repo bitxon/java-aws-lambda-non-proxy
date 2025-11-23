@@ -34,6 +34,7 @@ public class CdkInfraStack extends Stack {
             .tableName("Orders")
             .partitionKey(Attribute.builder().name("id").type(AttributeType.STRING).build())
             .billingMode(BillingMode.PAY_PER_REQUEST)
+            .removalPolicy(RemovalPolicy.DESTROY)
             .build();
 
         // ------------------------------------ Plain Java -------------------------------------
