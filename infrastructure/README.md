@@ -52,6 +52,21 @@ CDK_DEFAULT_REGION=...
     --cli-binary-format raw-in-base64-out \
     output.json && cat output.json | jq .
   ```
+  ```shell
+  awslocal lambda invoke --function-name order-function-python \
+    --payload '{ "name": "Birthday Gift" }' \
+    --region us-east-1 \
+    --cli-binary-format raw-in-base64-out \
+    output.json && cat output.json | jq .
+  ```
+  ```shell
+  awslocal dynamodb get-item \
+    --table-name Orders \
+    --key '{"id":{"S":"a7cd698e-85cb-4321-a7e5-dd2d53b50510"}}' \
+    --region us-east-1 \
+    --output json
+  ```
+
 
 </details>
 

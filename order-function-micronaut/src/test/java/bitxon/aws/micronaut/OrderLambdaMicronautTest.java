@@ -3,11 +3,13 @@ package bitxon.aws.micronaut;
 import bitxon.aws.micronaut.model.Order;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@Disabled // TODO implement with testcontainers-localstack
 public class OrderLambdaMicronautTest {
 
     private static OrderHandler handler;

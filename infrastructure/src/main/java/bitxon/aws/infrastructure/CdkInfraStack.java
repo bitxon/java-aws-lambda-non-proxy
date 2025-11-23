@@ -6,11 +6,16 @@ import software.amazon.awscdk.services.apigateway.IntegrationResponse;
 import software.amazon.awscdk.services.apigateway.LambdaIntegration;
 import software.amazon.awscdk.services.apigateway.MethodResponse;
 import software.amazon.awscdk.services.apigateway.RestApi;
+import software.amazon.awscdk.services.dynamodb.Attribute;
+import software.amazon.awscdk.services.dynamodb.AttributeType;
+import software.amazon.awscdk.services.dynamodb.BillingMode;
+import software.amazon.awscdk.services.dynamodb.Table;
 import software.amazon.awscdk.services.lambda.*;
 import software.amazon.awscdk.services.lambda.Runtime;
 import software.constructs.Construct;
 
 import java.util.List;
+import java.util.Map;
 
 public class CdkInfraStack extends Stack {
     public CdkInfraStack(final Construct scope, final String id) {
@@ -20,6 +25,13 @@ public class CdkInfraStack extends Stack {
     public CdkInfraStack(final Construct scope, final String id, final StackProps props) {
         super(scope, id, props);
 
+        // -------------------------------------- DynamoDB -------------------------------------
+        var dynamoDbTable = Table.Builder.create(this, "OrdersTable")
+            .tableName("Orders")
+            .partitionKey(Attribute.builder().name("id").type(AttributeType.STRING).build())
+            .billingMode(BillingMode.PAY_PER_REQUEST)
+            .build();
+
         // ------------------------------------ Plain Java -------------------------------------
         var funcPlain = Function.Builder.create(this, "order-function-plain")
             .functionName("order-function-plain")
@@ -27,7 +39,9 @@ public class CdkInfraStack extends Stack {
             .memorySize(512)
             .handler("bitxon.aws.plain.OrderHandler::handleRequest")
             .runtime(Runtime.JAVA_21)
+            .environment(Map.of("TABLE_NAME", dynamoDbTable.getTableName()))
             .build();
+        dynamoDbTable.grantWriteData(funcPlain);
 
         // -------------------------------------- Quarkus --------------------------------------
         var funcQuarkus = Function.Builder.create(this, "order-function-quarkus")
@@ -36,7 +50,9 @@ public class CdkInfraStack extends Stack {
             .memorySize(512)
             .handler("io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest")
             .runtime(Runtime.JAVA_21)
+            .environment(Map.of("TABLE_NAME", dynamoDbTable.getTableName()))
             .build();
+        dynamoDbTable.grantWriteData(funcQuarkus);
 
         // -------------------------------------- Micronaut --------------------------------------
         var funcMicronaut = Function.Builder.create(this, "order-function-micronaut")
@@ -45,7 +61,9 @@ public class CdkInfraStack extends Stack {
             .memorySize(512)
             .handler("bitxon.aws.micronaut.OrderHandler")
             .runtime(Runtime.JAVA_21)
+            .environment(Map.of("TABLE_NAME", dynamoDbTable.getTableName()))
             .build();
+        dynamoDbTable.grantWriteData(funcMicronaut);
 
         // -------------------------------------- Spring --------------------------------------
         var funcSpring = Function.Builder.create(this, "order-function-spring")
@@ -54,7 +72,9 @@ public class CdkInfraStack extends Stack {
             .memorySize(512)
             .handler("org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest")
             .runtime(Runtime.JAVA_21)
+            .environment(Map.of("TABLE_NAME", dynamoDbTable.getTableName()))
             .build();
+        dynamoDbTable.grantWriteData(funcSpring);
 
         // -------------------------------------- Python --------------------------------------
         var funcPython = Function.Builder.create(this, "order-function-python")
@@ -63,7 +83,9 @@ public class CdkInfraStack extends Stack {
             .memorySize(512)
             .handler("app.lambda_handler")
             .runtime(Runtime.PYTHON_3_13)
+            .environment(Map.of("TABLE_NAME", dynamoDbTable.getTableName()))
             .build();
+        dynamoDbTable.grantWriteData(funcPython);
 
 
         // ---------------------------------------- Api ----------------------------------------
