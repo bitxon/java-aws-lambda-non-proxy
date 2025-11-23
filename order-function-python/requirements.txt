@@ -1,0 +1,5 @@
+# No external dependencies required - using only Python built-in libraries:
+# - json (JSON serialization)
+# - uuid (UUID generation)
+# - dataclasses (data class definitions)
+# - typing (type hints)

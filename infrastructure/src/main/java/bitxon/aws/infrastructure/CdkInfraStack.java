@@ -6,9 +6,7 @@ import software.amazon.awscdk.services.apigateway.IntegrationResponse;
 import software.amazon.awscdk.services.apigateway.LambdaIntegration;
 import software.amazon.awscdk.services.apigateway.MethodResponse;
 import software.amazon.awscdk.services.apigateway.RestApi;
-import software.amazon.awscdk.services.lambda.Code;
-import software.amazon.awscdk.services.lambda.Function;
-import software.amazon.awscdk.services.lambda.IFunction;
+import software.amazon.awscdk.services.lambda.*;
 import software.amazon.awscdk.services.lambda.Runtime;
 import software.constructs.Construct;
 
@@ -58,6 +56,15 @@ public class CdkInfraStack extends Stack {
             .runtime(Runtime.JAVA_21)
             .build();
 
+        // -------------------------------------- Python --------------------------------------
+        var funcPython = Function.Builder.create(this, "order-function-python")
+            .functionName("order-function-python")
+            .code(Code.fromAsset("../order-function-python"))
+            .memorySize(512)
+            .handler("app.lambda_handler")
+            .runtime(Runtime.PYTHON_3_13)
+            .build();
+
 
         // ---------------------------------------- Api ----------------------------------------
         var api = RestApi.Builder.create(this, "order").build();
@@ -78,6 +85,10 @@ public class CdkInfraStack extends Stack {
         orderResource
             .addResource("spring")
             .addMethod("POST", integrationNonProxy(funcSpring))
+            .addMethodResponse(MethodResponse.builder().statusCode("200").build());
+        orderResource
+            .addResource("python")
+            .addMethod("POST", integrationNonProxy(funcPython))
             .addMethodResponse(MethodResponse.builder().statusCode("200").build());
     }
 
