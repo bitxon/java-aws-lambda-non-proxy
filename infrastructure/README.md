@@ -62,7 +62,7 @@ CDK_DEFAULT_REGION=...
   ```shell
   awslocal dynamodb get-item \
     --table-name Orders \
-    --key '{"id":{"S":"a7cd698e-85cb-4321-a7e5-dd2d53b50510"}}' \
+    --key '{"id":{"S":"733197b5-2c5c-42a1-8c97-47d3c00c47f5"}}' \
     --region us-east-1 \
     --output json
   ```
@@ -90,6 +90,18 @@ CDK_DEFAULT_REGION=...
     --payload '{ "name": "Birthday Gift" }' \
     --cli-binary-format raw-in-base64-out \
     output.json && cat output.json | jq .
+  ```
+  ```shell
+  awslambda invoke --function-name order-function-python \
+    --payload '{ "name": "Birthday Gift" }' \
+    --cli-binary-format raw-in-base64-out \
+    output.json && cat output.json | jq .
+  ```
+  ```shell
+  aws dynamodb get-item \
+    --table-name Orders \
+    --key '{"id":{"S":"b6c0ecb5-29f3-471a-a9b9-e65e3e930835"}}' \
+    --output json
   ```
 
 </details>

@@ -1,5 +1,7 @@
 package bitxon.aws.infrastructure;
 
+import software.amazon.awscdk.Duration;
+import software.amazon.awscdk.RemovalPolicy;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.StackProps;
 import software.amazon.awscdk.services.apigateway.IntegrationResponse;
@@ -12,6 +14,8 @@ import software.amazon.awscdk.services.dynamodb.BillingMode;
 import software.amazon.awscdk.services.dynamodb.Table;
 import software.amazon.awscdk.services.lambda.*;
 import software.amazon.awscdk.services.lambda.Runtime;
+import software.amazon.awscdk.services.logs.LogGroup;
+import software.amazon.awscdk.services.logs.RetentionDays;
 import software.constructs.Construct;
 
 import java.util.List;
@@ -37,9 +41,11 @@ public class CdkInfraStack extends Stack {
             .functionName("order-function-plain")
             .code(Code.fromAsset("../order-function-plain/build/libs/order-function-plain-1.0-SNAPSHOT-all.jar"))
             .memorySize(512)
+            .timeout(Duration.seconds(20))
             .handler("bitxon.aws.plain.OrderHandler::handleRequest")
             .runtime(Runtime.JAVA_21)
             .environment(Map.of("TABLE_NAME", dynamoDbTable.getTableName()))
+            .logGroup(logGroup(this, "order-function-plain"))
             .build();
         dynamoDbTable.grantWriteData(funcPlain);
 
@@ -48,9 +54,11 @@ public class CdkInfraStack extends Stack {
             .functionName("order-function-quarkus")
             .code(Code.fromAsset("../order-function-quarkus/build/function.zip"))
             .memorySize(512)
+            .timeout(Duration.seconds(20))
             .handler("io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest")
             .runtime(Runtime.JAVA_21)
             .environment(Map.of("TABLE_NAME", dynamoDbTable.getTableName()))
+            .logGroup(logGroup(this, "order-function-quarkus"))
             .build();
         dynamoDbTable.grantWriteData(funcQuarkus);
 
@@ -59,9 +67,11 @@ public class CdkInfraStack extends Stack {
             .functionName("order-function-micronaut")
             .code(Code.fromAsset("../order-function-micronaut/build/libs/order-function-micronaut-1.0-SNAPSHOT-all.jar"))
             .memorySize(512)
+            .timeout(Duration.seconds(20))
             .handler("bitxon.aws.micronaut.OrderHandler")
             .runtime(Runtime.JAVA_21)
             .environment(Map.of("TABLE_NAME", dynamoDbTable.getTableName()))
+            .logGroup(logGroup(this, "order-function-micronaut"))
             .build();
         dynamoDbTable.grantWriteData(funcMicronaut);
 
@@ -70,9 +80,11 @@ public class CdkInfraStack extends Stack {
             .functionName("order-function-spring")
             .code(Code.fromAsset("../order-function-spring/build/libs/order-function-spring-1.0-SNAPSHOT-aws.jar"))
             .memorySize(512)
+            .timeout(Duration.seconds(20))
             .handler("org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest")
             .runtime(Runtime.JAVA_21)
             .environment(Map.of("TABLE_NAME", dynamoDbTable.getTableName()))
+            .logGroup(logGroup(this, "order-function-spring"))
             .build();
         dynamoDbTable.grantWriteData(funcSpring);
 
@@ -81,9 +93,11 @@ public class CdkInfraStack extends Stack {
             .functionName("order-function-python")
             .code(Code.fromAsset("../order-function-python"))
             .memorySize(512)
+            .timeout(Duration.seconds(20))
             .handler("app.lambda_handler")
             .runtime(Runtime.PYTHON_3_13)
             .environment(Map.of("TABLE_NAME", dynamoDbTable.getTableName()))
+            .logGroup(logGroup(this, "order-function-python"))
             .build();
         dynamoDbTable.grantWriteData(funcPython);
 
@@ -121,6 +135,14 @@ public class CdkInfraStack extends Stack {
             .proxy(false)
             .integrationResponses(
                 List.of(IntegrationResponse.builder().statusCode("200").build()))
+            .build();
+    }
+
+    private static LogGroup logGroup(Construct scope, String name) {
+        return LogGroup.Builder.create(scope, "%s-logs".formatted(name))
+            .logGroupName("/aws/lambda/%s".formatted(name))
+            .retention(RetentionDays.ONE_WEEK)
+            .removalPolicy(RemovalPolicy.DESTROY)
             .build();
     }
 
