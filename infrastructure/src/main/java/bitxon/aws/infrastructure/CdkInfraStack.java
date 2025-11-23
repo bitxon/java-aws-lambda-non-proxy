@@ -28,7 +28,7 @@ public class CdkInfraStack extends Stack {
             .code(Code.fromAsset("../order-function-plain/build/libs/order-function-plain-1.0-SNAPSHOT-all.jar"))
             .memorySize(512)
             .handler("bitxon.aws.plain.OrderHandler::handleRequest")
-            .runtime(Runtime.JAVA_17)
+            .runtime(Runtime.JAVA_21)
             .build();
 
         // -------------------------------------- Quarkus --------------------------------------
@@ -37,7 +37,7 @@ public class CdkInfraStack extends Stack {
             .code(Code.fromAsset("../order-function-quarkus/build/function.zip"))
             .memorySize(512)
             .handler("io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest")
-            .runtime(Runtime.JAVA_17)
+            .runtime(Runtime.JAVA_21)
             .build();
 
         // -------------------------------------- Micronaut --------------------------------------
@@ -46,7 +46,7 @@ public class CdkInfraStack extends Stack {
             .code(Code.fromAsset("../order-function-micronaut/build/libs/order-function-micronaut-1.0-SNAPSHOT-all.jar"))
             .memorySize(512)
             .handler("bitxon.aws.micronaut.OrderHandler")
-            .runtime(Runtime.JAVA_17)
+            .runtime(Runtime.JAVA_21)
             .build();
 
         // -------------------------------------- Spring --------------------------------------
@@ -55,7 +55,7 @@ public class CdkInfraStack extends Stack {
             .code(Code.fromAsset("../order-function-spring/build/libs/order-function-spring-1.0-SNAPSHOT-aws.jar"))
             .memorySize(512)
             .handler("org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest")
-            .runtime(Runtime.JAVA_17)
+            .runtime(Runtime.JAVA_21)
             .build();
 
 
