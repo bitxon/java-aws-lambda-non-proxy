@@ -1,33 +1,21 @@
 # AWS CDK
 
-## Install
+## Install Tools
 
 ```shell
-# Base AWS
+# Base AWS tools
 brew install awscli
 npm install -g aws-cdk
 
-# LocalStack
+# LocalStack tools
 brew install localstack/tap/localstack-cli
 brew install awscli-local
-npm install -g aws-cdk aws-cdk-local
-```
-
-## SetUp
-Configure AWS CLI credentials
-```shell
-aws configure
-# aws configure sso # modern way
-```
-Configure accountId and region for CDK
-```shell
-CDK_DEFAULT_ACCOUNT=...
-CDK_DEFAULT_REGION=...
+npm install -g aws-cdk-local
 ```
 
 ## LocalStack Setup
 <details>
-  <summary>See details</summary>
+  <summary>See details: to run on local machine</summary>
 
   ### Start LocalStack
   ```shell
@@ -72,7 +60,20 @@ CDK_DEFAULT_REGION=...
 
 ## Prod Setup
 <details>
-  <summary>See details</summary>
+  <summary>See details: to run on real AWS account</summary>
+
+
+  ### SetUp
+  Configure AWS CLI credentials
+  ```shell
+  aws configure
+  # aws configure sso # modern way
+  ```
+  Configure accountId and region for CDK
+  ```shell
+  CDK_DEFAULT_ACCOUNT=...
+  CDK_DEFAULT_REGION=...
+  ```
 
   ### Use CDK
   * `cdk bootstrap`   [Bootstrap](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html)
