@@ -41,11 +41,9 @@ npm install -g aws-cdk-local
     output.json && cat output.json | jq .
   ```
   ```shell
-  awslocal lambda invoke --function-name order-function-python \
-    --payload '{ "name": "Birthday Gift" }' \
-    --region us-east-1 \
-    --cli-binary-format raw-in-base64-out \
-    output.json && cat output.json | jq .
+  curl -X POST http://<REST_API_ID>.execute-api.localhost.localstack.cloud:4566/prod/order/plain \
+    -H "Content-Type: application/json" \
+    -d '{ "name": "Birthday Gift" }' | jq .
   ```
   ```shell
   awslocal dynamodb get-item \
