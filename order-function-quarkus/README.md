@@ -29,7 +29,7 @@ Env: `N/A`
 ### Build
 
 ```shell script
-gradle clean build -Dquarkus.package.type=native -Dquarkus.native.container-build=true
+gradle clean build -Dquarkus.package.jar.enabled=false -Dquarkus.native.enabled=true -Dquarkus.native.container-build=true
 ```
 
 ### Handler
