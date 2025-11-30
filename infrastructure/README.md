@@ -27,6 +27,9 @@ npm install -g aws-cdk-local
   * `cdklocal diff`        compare deployed stack with current state
   * `cdklocal deploy`      deploy this stack to your localstack AWS account/region
   * `cdklocal destroy`     destroy this stack in your localstack AWS account/region
+  ```shell
+  cdklocal bootstrap && cdklocal deploy --require-approval never
+  ```
 
     
   ### Verify Lambda functions
