@@ -1,10 +1,10 @@
 plugins {
-    id("io.micronaut.library") version "4.0.4"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.micronaut.library") version "4.6.1"
+    id("com.gradleup.shadow") version "8.3.9"
 }
 
-group = 'bitxon.aws'
-version = '1.0-SNAPSHOT'
+group = "bitxon.aws"
+version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -12,14 +12,24 @@ repositories {
 
 dependencies {
     annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
-    implementation("com.amazonaws:aws-lambda-java-events:3.11.3")
+    annotationProcessor("io.micronaut.validation:micronaut-validation-processor")
+    implementation("com.amazonaws:aws-lambda-java-events")
     implementation("io.micronaut.aws:micronaut-aws-lambda-events-serde")
+    implementation("io.micronaut.aws:micronaut-aws-sdk-v2")
     implementation("io.micronaut.aws:micronaut-function-aws")
     implementation("io.micronaut.crac:micronaut-crac")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
-    implementation 'org.apache.commons:commons-lang3:3.13.0'
-    implementation 'software.amazon.awssdk:dynamodb:2.29.25'
+    implementation("io.micronaut.validation:micronaut-validation")
+    implementation("jakarta.validation:jakarta.validation-api")
+    implementation("org.apache.commons:commons-lang3:3.13.0")
+    implementation("software.amazon.awssdk:dynamodb") {
+        // https://micronaut-projects.github.io/micronaut-aws/latest/guide/#urlConnection
+        exclude group: "software.amazon.awssdk", module: "apache-client"
+        exclude group: "software.amazon.awssdk", module: "netty-nio-client"
+    }
+    implementation("software.amazon.awssdk:url-connection-client")
     runtimeOnly("ch.qos.logback:logback-classic")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 
@@ -28,7 +38,7 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
-assemble.dependsOn = [shadowJar]
+assemble.dependsOn = [shadowJar] // produce jar with all dependencies during build
 
 micronaut {
     runtime("lambda_java")
@@ -38,6 +48,3 @@ micronaut {
         annotations("bitxon.aws.*")
     }
 }
-
-
-
