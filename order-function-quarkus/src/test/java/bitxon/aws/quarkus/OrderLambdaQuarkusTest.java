@@ -1,7 +1,7 @@
 package bitxon.aws.quarkus;
 
 import bitxon.aws.quarkus.model.Order;
-import org.junit.jupiter.api.Disabled;
+import io.quarkus.test.common.QuarkusTestResource;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.junit.QuarkusTest;
@@ -10,8 +10,8 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
-@Disabled // TODO implement with testcontainers-localstack
 @QuarkusTest
+@QuarkusTestResource(TestcontainersLifecycleManager.class)
 public class OrderLambdaQuarkusTest {
 
     @Test

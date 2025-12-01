@@ -18,6 +18,8 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.13.0'
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:localstack'
 }
 
 group = 'bitxon.aws'

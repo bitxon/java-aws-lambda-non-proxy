@@ -4,11 +4,13 @@ import bitxon.aws.quarkus.model.Order;
 import bitxon.aws.quarkus.model.SavedOrder;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -17,9 +19,9 @@ public class OrderService {
     private final DynamoDbClient dynamoDbClient;
     private final String tableName;
 
-    public OrderService(DynamoDbClient dynamoDbClient) {
+    public OrderService(DynamoDbClient dynamoDbClient, @ConfigProperty(name = "TABLE_NAME") String tableName) {
         this.dynamoDbClient = dynamoDbClient;
-        this.tableName = System.getenv("TABLE_NAME");
+        this.tableName = Objects.requireNonNull(tableName, "TABLE_NAME must be set");
     }
 
     public SavedOrder save(Order order) {
